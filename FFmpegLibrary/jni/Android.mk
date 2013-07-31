@@ -24,8 +24,6 @@ MODULE_ENCRYPT:=
 
 #settings
 
-# add support for encryption
-MODULE_ENCRYPT:=yes
 
 
 #if armeabi-v7a
@@ -35,15 +33,6 @@ ifeq ($(TARGET_ARCH_ABI), armeabi-v7a)
 else
 
 endif
-
-#if armeabi or armeabi-v7a
-ifeq ($(TARGET_ARCH_ABI),$(filter $(TARGET_ARCH_ABI),armeabi armeabi-v7a))
-	# add profiler (only arm)
-	#LIBRARY_PROFILER:=yes
-
-endif
-
-
 
 
 include $(CLEAR_VARS)
@@ -68,16 +57,10 @@ endif
 include $(CLEAR_VARS)
 LOCAL_ALLOW_UNDEFINED_SYMBOLS=false
 LOCAL_MODULE := ffmpeg-jni
-LOCAL_SRC_FILES := ffmpeg-jni.c player.c queue.c helpers.c jni-protocol.c blend.c convert.cpp editor.c
+LOCAL_SRC_FILES := ffmpeg-jni.c player.c queue.c helpers.c jni-protocol.c convert.cpp editor.c
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/ffmpeg-build/$(TARGET_ARCH_ABI)/include
 LOCAL_SHARED_LIBRARY := ffmpeg-prebuilt
 
-#if enabled profiler add it
-ifdef LIBRARY_PROFILER
-LOCAL_CFLAGS += -pg -g -DPROFILER
-LOCAL_STATIC_LIBRARIES += andprof
-LOCAL_REQUIRED_MODULES += andprof
-endif
 
 LOCAL_CFLAGS += -DLIBYUV
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/libyuv/include
@@ -85,13 +68,6 @@ LOCAL_CPP_INCLUDES += $(LOCAL_PATH)/libyuv/include
 LOCAL_STATIC_LIBRARIES += libyuv_static
 LOCAL_REQUIRED_MODULES += libyuv_static
 
-ifdef MODULE_ENCRYPT
-LOCAL_CFLAGS += -DMODULE_ENCRYPT
-LOCAL_SRC_FILES += aes-protocol.c
-LOCAL_C_INCLUDES += $(LOCAL_PATH)/tropicssl/include
-LOCAL_STATIC_LIBRARIES += tropicssl
-LOCAL_REQUIRED_MODULES += tropicssl
-endif
 
 LOCAL_LDLIBS    += -landroid
 LOCAL_LDLIBS += -llog -ljnigraphics -lz -lm -g $(LOCAL_PATH)/ffmpeg-build/$(TARGET_ARCH_ABI)/libffmpeg.so
@@ -102,16 +78,10 @@ ifdef FEATURE_NEON
 include $(CLEAR_VARS)
 LOCAL_ALLOW_UNDEFINED_SYMBOLS=false
 LOCAL_MODULE := ffmpeg-jni-neon
-LOCAL_SRC_FILES := ffmpeg-jni.c player.c queue.c helpers.c jni-protocol.c blend.c convert.cpp editor.c
+LOCAL_SRC_FILES := ffmpeg-jni.c player.c queue.c helpers.c jni-protocol.c convert.cpp editor.c
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/ffmpeg-build/$(TARGET_ARCH_ABI)/include
 LOCAL_SHARED_LIBRARY := ffmpeg-prebuilt-neon
 
-#if enabled profiler add it
-ifdef LIBRARY_PROFILER
-LOCAL_CFLAGS += -pg -g -DPROFILER
-LOCAL_STATIC_LIBRARIES += andprof
-LOCAL_REQUIRED_MODULES += andprof
-endif
 
 LOCAL_CFLAGS += -DLIBYUV
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/libyuv/include
@@ -119,13 +89,6 @@ LOCAL_CPP_INCLUDES += $(LOCAL_PATH)/libyuv/include
 LOCAL_STATIC_LIBRARIES += libyuv_static
 LOCAL_REQUIRED_MODULES += libyuv_static
 
-ifdef MODULE_ENCRYPT
-LOCAL_CFLAGS += -DMODULE_ENCRYPT
-LOCAL_SRC_FILES += aes-protocol.c
-LOCAL_C_INCLUDES += $(LOCAL_PATH)/tropicssl/include
-LOCAL_STATIC_LIBRARIES += tropicssl
-LOCAL_REQUIRED_MODULES += tropicssl
-endif
 
 LOCAL_LDLIBS    += -landroid
 LOCAL_LDLIBS += -llog -ljnigraphics -lz -lm -g $(LOCAL_PATH)/ffmpeg-build/$(TARGET_ARCH_ABI)/libffmpeg-neon.so
@@ -151,15 +114,6 @@ LOCAL_STATIC_LIBRARIES := cpufeatures
 LOCAL_LDLIBS  := -llog
 include $(BUILD_SHARED_LIBRARY)
 
-
-#includes
-ifdef MODULE_ENCRYPT
-include $(LOCAL_PATH)/Android-tropicssl.mk
-endif
-
-ifdef LIBRARY_PROFILER
-include $(LOCAL_PATH)/android-ndk-profiler-3.1/android-ndk-profiler.mk
-endif
 
 include $(call all-makefiles-under,$(LOCAL_PATH))
 $(call import-module,cpufeatures)

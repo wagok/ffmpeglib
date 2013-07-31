@@ -65,7 +65,7 @@ static AVStream *add_audio_stream(AVFormatContext *oc, AVCodec **codec,
     c = st->codec;
 
     /* put sample parameters */
-    c->sample_fmt  = AV_SAMPLE_FMT_S16;
+    c->sample_fmt  = enc_data->audio_sample_fmt; //AV_SAMPLE_FMT_S16;
     c->bit_rate    = enc_data->audio_bit_rate;
     c->sample_rate = enc_data->audio_sample_rate;
     c->channels    = enc_data->audio_channels;
@@ -82,6 +82,7 @@ static void open_audio(AVFormatContext *oc, AVCodec *codec, AVStream *st, struct
     AVCodecContext *c;
 
     c = st->codec;
+    c->strict_std_compliance = -2;
 
     /* open it */
     if (avcodec_open2(c, codec, NULL) < 0) {

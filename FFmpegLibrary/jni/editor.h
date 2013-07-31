@@ -29,6 +29,7 @@ struct EncoderData {
    enum AVCodecID audio_codec_id;
    int audio_channels;
    long duration;
+   enum AVSampleFormat audio_sample_fmt;
 };
 
 static AVStream *add_audio_stream(AVFormatContext *oc, AVCodec **codec,

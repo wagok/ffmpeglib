@@ -65,7 +65,7 @@ public class MainVideoActivity extends Activity  {
 		mVideoView = this.findViewById(R.id.video_view);
 
         File videoFile = new File(Environment.getExternalStorageDirectory(),
-                "Download/my_7554.mp4");
+                "Download/my_vid.mp4");
         String url = "file://" + videoFile.getAbsolutePath();
 
         String[] cmdLine = {"first param", "second param", "param #3", "param #4"};
@@ -73,7 +73,7 @@ public class MainVideoActivity extends Activity  {
 		mMpegPlayer = VideoPlayerFactory.creteVideoEditor(url, (FFmpegSurfaceView) mVideoView, this);
         mMpegPlayer.command(cmdLine);
         File videoFileOut = new File(Environment.getExternalStorageDirectory(),
-                "Download/out_hd.mp4");
+                "Download/out_out_big.mp4");
         url = "file://" + videoFileOut.getAbsolutePath();
 
         try {

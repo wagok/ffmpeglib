@@ -24,7 +24,8 @@ fi
 OS=`uname -s | tr '[A-Z]' '[a-z]'`
 
 SYSROOT=${NDK}/platforms/android-9/arch-arm
-X264_CROSS_PREFIX=${NDK}/toolchains/arm-linux-androideabi-4.6/prebuilt/${OS}-x86/bin/arm-linux-androideabi-
+TOOLCHAIN_VERSION=4.7
+X264_CROSS_PREFIX=${NDK}/toolchains/arm-linux-androideabi-${TOOLCHAIN_VERSION}/prebuilt/${OS}-x86/bin/arm-linux-androideabi-
 
 
 
@@ -271,48 +272,19 @@ EOF
 	    --extra-ldflags="-Wl,-rpath-link=$PLATFORM/usr/lib -L$PLATFORM/usr/lib  -nostdlib -lc -lm -ldl -llog -L$PREFIX/lib" \
 	    --extra-cflags="-I$PREFIX/include" \
 	    --disable-everything \
-	    --enable-libass \
-	    --enable-libvo-aacenc \
-	    --enable-libvo-amrwbenc \
 	    --enable-libx264 \
 	    --enable-hwaccel=h264_vaapi \
 	    --enable-hwaccel=h264_dxva2 \
 	    --enable-hwaccel=mpeg4_vaapi \
-	    --enable-demuxer=mov \
-	    --enable-demuxer=h264 \
+ 	    --enable-demuxer=h264 \
 	    --enable-demuxer=mpegvideo \
 	    --enable-demuxer=h263 \
 	    --enable-demuxer=mpegps \
-	    --enable-demuxer=mjpeg \
-	    --enable-demuxer=rtsp \
-	    --enable-demuxer=rtp \
-	    --enable-demuxer=hls \
-	    --enable-demuxer=matroska \
-	    --enable-muxer=rtsp \
 	    --enable-muxer=mp4 \
-	    --enable-muxer=mov \
-	    --enable-muxer=mjpeg \
-	    --enable-muxer=matroska \
-	    --enable-muxer=h264 \
-	    --enable-protocol=crypto \
-	    --enable-protocol=jni \
+ 	    --enable-muxer=h264 \
+   	    --enable-protocol=jni \
 	    --enable-protocol=file \
-	    --enable-protocol=rtp \
-	    --enable-protocol=tcp \
-	    --enable-protocol=udp \
-	    --enable-protocol=applehttp \
-	    --enable-protocol=hls \
-	    --enable-protocol=http \
-	    --enable-decoder=xsub \
-	    --enable-decoder=jacosub \
-	    --enable-decoder=dvdsub \
-	    --enable-decoder=dvbsub \
-	    --enable-decoder=subviewer \
-	    --enable-decoder=rawvideo \
-	    --enable-encoder=rawvideo \
-	    --enable-decoder=mjpeg \
-	    --enable-encoder=mjpeg \
-	    --enable-decoder=h263 \
+ 	    --enable-decoder=h263 \
 	    --enable-decoder=mpeg4 \
 	    --enable-encoder=mpeg4 \
 	    --enable-decoder=h264 \
@@ -320,14 +292,8 @@ EOF
 	    --enable-decoder=aac \
 	    --enable-encoder=aac \
 	    --enable-parser=h264 \
-	    --enable-encoder=mp2 \
-	    --enable-decoder=mp2 \
-	    --enable-encoder=libvo_amrwbenc \
-	    --enable-decoder=amrwb \
-	    --enable-muxer=mp2 \
-        --disable-debug \
+         --disable-debug \
         --enable-encoder=libx264  \
-	    --enable-bsfs \
 	    --enable-decoders \
 	    --enable-encoders \
 	    --enable-parsers \
@@ -338,13 +304,12 @@ EOF
 	    --enable-avresample \
 	    --enable-zlib \
 	    --disable-doc \
-            --disable-ffmpeg \
+        --disable-ffmpeg \
 	    --disable-ffplay \
 	    --disable-ffprobe \
 	    --disable-ffserver \
 	    --disable-avfilter \
 	    --disable-avdevice \
-	    --enable-nonfree \
 	    --enable-version3 \
 	    --enable-memalign-hack \
 	    --enable-asm \
@@ -367,36 +332,15 @@ function build_one {
 	  -z noexecstack -Bsymbolic --whole-archive \
 	   --no-undefined -o $OUT_LIBRARY -lavcodec \
 	   -lavformat -lavresample -lavutil -lswresample \
-	   -lass -lfreetype -lfribidi -lswscale \
-	   -lvo-aacenc -lvo-amrwbenc  \
-	   -lx264 \
+	    -lswscale \
+	    -lx264 \
 	   -lc -lm -lz -ldl -llog  \
 	     --dynamic-linker=/system/bin/linker \
-	   -zmuldefs $PREBUILT/lib/gcc/$EABIARCH/4.6/libgcc.a || exit 1
+	   -zmuldefs $PREBUILT/lib/gcc/$EABIARCH/${TOOLCHAIN_VERSION}/libgcc.a || exit 1
 	cd ..
 }
 
   set -x verbose
-#arm v5
-EABIARCH=arm-linux-androideabi
-ARCH=arm
-CPU=armv5
-OPTIMIZE_CFLAGS="-marm -march=$CPU"
-PREFIX=../ffmpeg-build/armeabi
-OUT_LIBRARY=$PREFIX/libffmpeg.so
-ADDITIONAL_CONFIGURE_FLAG=--disable-asm
-SONAME=libffmpeg.so
-PREBUILT=$NDK/toolchains/arm-linux-androideabi-4.6/prebuilt/$OS-x86
-PLATFORM_VERSION=android-5
-echo $PLATFORM
-#build_xx264
-#build_amr
-#build_aac
-#build_fribidi
-#build_freetype2
-#build_ass
-#build_ffmpeg
-#build_one
 
 
 
@@ -409,14 +353,14 @@ PREFIX=../ffmpeg-build/armeabi-v7a
 OUT_LIBRARY=$PREFIX/libffmpeg.so
 ADDITIONAL_CONFIGURE_FLAG=
 SONAME=libffmpeg.so
-PREBUILT=$NDK/toolchains/arm-linux-androideabi-4.6/prebuilt/$OS-x86
+PREBUILT=$NDK/toolchains/arm-linux-androideabi-${TOOLCHAIN_VERSION}/prebuilt/$OS-x86
 PLATFORM_VERSION=android-9
-build_amr
-build_aac
-build_fribidi
-build_freetype2
+#build_amr
+#build_aac
+#build_fribidi
+#build_freetype2
 build_xx264
-build_ass
+#build_ass
 build_ffmpeg
 build_one
 
@@ -430,13 +374,13 @@ PREFIX=../ffmpeg-build/armeabi-v7a-neon
 OUT_LIBRARY=../ffmpeg-build/armeabi-v7a/libffmpeg-neon.so
 ADDITIONAL_CONFIGURE_FLAG=--enable-neon
 SONAME=libffmpeg-neon.so
-PREBUILT=$NDK/toolchains/arm-linux-androideabi-4.6/prebuilt/$OS-x86
+PREBUILT=$NDK/toolchains/arm-linux-androideabi-${TOOLCHAIN_VERSION}/prebuilt/$OS-x86
 PLATFORM_VERSION=android-9
-build_amr
-build_aac
-build_fribidi
-build_freetype2
+#build_amr
+#build_aac
+#build_fribidi
+#build_freetype2
 build_xx264
-build_ass
+#build_ass
 build_ffmpeg
 build_one
