@@ -76,12 +76,15 @@ public class MainVideoActivity extends Activity  {
                 "Download/out_out_big.mp4");
         url = "file://" + videoFileOut.getAbsolutePath();
 
+        /*
         try {
         mMpegPlayer.save(url);
+
         } catch (VideoException e) {
 
         }
-
+        */
+        mMpegPlayer.play();
 
 	}
 

@@ -63,6 +63,110 @@ function build_xx264()
     	cd ..
 }
 
+function old_build_ffmpeg
+{
+	PLATFORM=$NDK/platforms/$PLATFORM_VERSION/arch-$ARCH/
+	CC=$PREBUILT/bin/$EABIARCH-gcc
+	CROSS_PREFIX=$PREBUILT/bin/$EABIARCH-
+	PKG_CONFIG=${CROSS_PREFIX}pkg-config
+	if [ ! -f $PKG_CONFIG ];
+	then
+		cat > $PKG_CONFIG << EOF
+#!/bin/bash
+pkg-config \$*
+EOF
+		chmod u+x $PKG_CONFIG
+	fi
+	NM=$PREBUILT/bin/$EABIARCH-nm
+	cd ffmpeg
+	export PKG_CONFIG_LIBDIR=$(pwd)/$PREFIX/lib/pkgconfig/
+	export PKG_CONFIG_PATH=$(pwd)/$PREFIX/lib/pkgconfig/
+	./configure --target-os=linux \
+	    --prefix=$PREFIX \
+	    --enable-cross-compile \
+	    --extra-libs="-lgcc" \
+	    --arch=$ARCH \
+	    --cc=$CC \
+	    --cross-prefix=$CROSS_PREFIX \
+	    --nm=$NM \
+	    --sysroot=$PLATFORM \
+	    --extra-cflags=" -O3 -fpic -DANDROID -DHAVE_SYS_UIO_H=1 -Dipv6mr_interface=ipv6mr_ifindex -fasm -Wno-psabi -fno-short-enums  -fno-strict-aliasing -finline-limit=300 $OPTIMIZE_CFLAGS " \
+	    --disable-shared \
+	    --enable-static \
+	    --enable-runtime-cpudetect \
+	    --extra-ldflags="-Wl,-rpath-link=$PLATFORM/usr/lib -L$PLATFORM/usr/lib  -nostdlib -lc -lm -ldl -llog -L$PREFIX/lib" \
+	    --extra-cflags="-I$PREFIX/include" \
+	    --disable-everything \
+	    --enable-libx264 \
+	    --enable-hwaccel=h264_vaapi \
+	    --enable-hwaccel=h264_dxva2 \
+	    --enable-hwaccel=mpeg4_vaapi \
+	    --enable-demuxer=mov \
+	    --enable-demuxer=h264 \
+	    --enable-demuxer=mpegvideo \
+	    --enable-demuxer=h263 \
+	    --enable-demuxer=matroska \
+	    --enable-muxer=mp4 \
+	    --enable-muxer=mov \
+	    --enable-muxer=matroska \
+	    --enable-muxer=h264 \
+	    --enable-protocol=crypto \
+	    --enable-protocol=jni \
+	    --enable-protocol=file \
+	    --enable-protocol=hls \
+	    --enable-protocol=http \
+	    --enable-decoder=xsub \
+	    --enable-decoder=jacosub \
+	    --enable-decoder=dvdsub \
+	    --enable-decoder=dvbsub \
+	    --enable-decoder=subviewer \
+	    --enable-decoder=rawvideo \
+	    --enable-encoder=rawvideo \
+	    --enable-decoder=mjpeg \
+	    --enable-encoder=mjpeg \
+	    --enable-decoder=h263 \
+	    --enable-decoder=mpeg4 \
+	    --enable-encoder=mpeg4 \
+	    --enable-decoder=h264 \
+	    --enable-encoder=h264 \
+	    --enable-decoder=aac \
+	    --enable-encoder=aac \
+	    --enable-parser=h264 \
+	    --enable-encoder=mp2 \
+	    --enable-decoder=mp2 \
+	    --enable-encoder=libvo_amrwbenc \
+	    --enable-decoder=amrwb \
+	    --enable-muxer=mp2 \
+        --disable-debug \
+        --enable-encoder=libx264  \
+	    --enable-bsfs \
+	    --enable-decoders \
+	    --enable-encoders \
+	    --enable-parsers \
+	    --enable-hwaccels \
+	    --enable-muxers \
+	    --enable-avformat \
+	    --enable-avcodec \
+	    --enable-avresample \
+	    --enable-zlib \
+	    --disable-doc \
+        --disable-ffmpeg \
+	    --disable-ffplay \
+	    --disable-ffprobe \
+	    --disable-ffserver \
+	    --disable-avfilter \
+	    --disable-avdevice \
+	    --enable-version3 \
+	    --enable-memalign-hack \
+	    --enable-asm \
+	    --enable-gpl \
+	    $ADDITIONAL_CONFIGURE_FLAG \
+	    || exit 1
+	make clean || exit 1
+	make -j4 install || exit 1
+
+	cd ..
+}
 
 
 function build_ffmpeg
@@ -141,6 +245,7 @@ EOF
 	    --enable-memalign-hack \
 	    --enable-asm \
 	    --enable-gpl \
+	    --enable-nonfree \
 	    $ADDITIONAL_CONFIGURE_FLAG \
 	    || exit 1
 	make clean || exit 1
@@ -183,7 +288,7 @@ SONAME=libffmpeg.so
 PREBUILT=$NDK/toolchains/arm-linux-androideabi-${TOOLCHAIN_VERSION}/prebuilt/$OS-x86
 PLATFORM_VERSION=android-9
 build_xx264
-build_ffmpeg
+old_build_ffmpeg
 build_one
 
 
@@ -199,5 +304,5 @@ SONAME=libffmpeg-neon.so
 PREBUILT=$NDK/toolchains/arm-linux-androideabi-${TOOLCHAIN_VERSION}/prebuilt/$OS-x86
 PLATFORM_VERSION=android-9
 build_xx264
-build_ffmpeg
+old_build_ffmpeg
 build_one
