@@ -140,8 +140,7 @@ EOF
 	    --enable-avresample \
 	    --enable-zlib \
 	    --disable-doc \
-        --disable-ffmpeg \
-	    --disable-ffplay \
+        --disable-ffplay \
 	    --disable-ffprobe \
 	    --disable-ffserver \
 	    --disable-avfilter \

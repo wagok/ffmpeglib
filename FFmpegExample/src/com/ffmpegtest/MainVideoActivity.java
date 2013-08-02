@@ -68,7 +68,7 @@ public class MainVideoActivity extends Activity  {
                 "Download/my_vid.mp4");
         String url = "file://" + videoFile.getAbsolutePath();
 
-        String[] cmdLine = {"first param", "second param", "param #3", "param #4"};
+        String[] cmdLine = {"-i", "Download/my_vid.mp4", "-vcodec", "copy", "-ss", "00:00:00", "-t", "00:00:04", "Download/trimmed_video.mp4"}; // ffmpeg -i video.avi -vcodec copy -acodec copy -ss 00:00:00 -t 00:00:04 trimmed_video.avi
 
 		mMpegPlayer = VideoPlayerFactory.creteVideoEditor(url, (FFmpegSurfaceView) mVideoView, this);
         mMpegPlayer.command(cmdLine);
