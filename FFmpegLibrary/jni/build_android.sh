@@ -26,8 +26,8 @@ fi
 OS=`uname -s | tr '[A-Z]' '[a-z]'`
 
 SYSROOT=${NDK}/platforms/android-9/arch-arm
-TOOLCHAIN_VERSION=4.7
-X264_CROSS_PREFIX=${NDK}/toolchains/arm-linux-androideabi-${TOOLCHAIN_VERSION}/prebuilt/${OS}-x86/bin/arm-linux-androideabi-
+TOOLCHAIN_VERSION=4.8
+X264_CROSS_PREFIX=${NDK}/toolchains/arm-linux-androideabi-${TOOLCHAIN_VERSION}/prebuilt/${OS}-x86_64/bin/arm-linux-androideabi-
 
 
 
@@ -140,6 +140,7 @@ EOF
 	    --enable-avresample \
 	    --enable-zlib \
 	    --disable-doc \
+	    --disable-ffmpeg \
         --disable-ffplay \
 	    --disable-ffprobe \
 	    --disable-ffserver \
@@ -196,7 +197,7 @@ PREFIX=../ffmpeg-build/armeabi-v7a
 OUT_LIBRARY=$PREFIX/libffmpeg.so
 ADDITIONAL_CONFIGURE_FLAG=
 SONAME=libffmpeg.so
-PREBUILT=$NDK/toolchains/arm-linux-androideabi-${TOOLCHAIN_VERSION}/prebuilt/$OS-x86
+PREBUILT=$NDK/toolchains/arm-linux-androideabi-${TOOLCHAIN_VERSION}/prebuilt/$OS-x86_64
 PLATFORM_VERSION=android-9
 PLATFORM=$NDK/platforms/$PLATFORM_VERSION/arch-$ARCH/
 build_x264
@@ -214,7 +215,7 @@ PREFIX=../ffmpeg-build/armeabi-v7a-neon
 OUT_LIBRARY=../ffmpeg-build/armeabi-v7a/libffmpeg-neon.so
 ADDITIONAL_CONFIGURE_FLAG=--enable-neon
 SONAME=libffmpeg-neon.so
-PREBUILT=$NDK/toolchains/arm-linux-androideabi-${TOOLCHAIN_VERSION}/prebuilt/$OS-x86
+PREBUILT=$NDK/toolchains/arm-linux-androideabi-${TOOLCHAIN_VERSION}/prebuilt/$OS-x86_64
 PLATFORM_VERSION=android-9
 PLATFORM=$NDK/platforms/$PLATFORM_VERSION/arch-$ARCH/
 build_x264
