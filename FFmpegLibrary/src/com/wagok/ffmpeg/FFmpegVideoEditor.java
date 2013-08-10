@@ -162,7 +162,9 @@ public class FFmpegVideoEditor  extends AbstractVideoEditor implements IVideoEdi
 
     @Override
     public void command(String[] cmdLine) {
-        mMpegPlayer.ffmpegCMD(cmdLine);
+        Videokit vk = new Videokit();
+        vk.run(cmdLine);
+        //mMpegPlayer.ffmpegCMD(cmdLine);
     }
 
 
