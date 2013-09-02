@@ -45,15 +45,41 @@ public class MainVideoActivity extends Activity  {
 
         File videoFile = new File(Environment.getExternalStorageDirectory(),
                 "Download/my_vid.mp4");
-        String url = "file://" + videoFile.getAbsolutePath();
 
-        String[] cmdLine = {"ffmpeg", "-i", url, "-vcodec", "copy", "-ss", "00:00:00", "-t", "00:00:04", url+"trimmed.mp4"}; // ffmpeg -i video.avi -vcodec copy -acodec copy -ss 00:00:00 -t 00:00:04 trimmed_video.avi
+        File videoFileTrimmed = new File(Environment.getExternalStorageDirectory(),
+                "Download/my_ttr.mp4");
+
+        File videoFileFrame = new File(Environment.getExternalStorageDirectory(),
+                "Download/m_out.jpg");
+
+        //String[] cmdLine = {"ffmpeg", "-i", url, "-vcodec", "copy", "-ss", "00:00:00", "-t", "00:00:04", url+"trimmed.mp4"}; // ffmpeg -i video.avi -vcodec copy -acodec copy -ss 00:00:00 -t 00:00:04 trimmed_video.avi
+
+        /*
+        File videoFile1 = new File(Environment.getExternalStorageDirectory(),
+                "Download/my_4673.mp4");
+        String url1 = "file://" + videoFile1.getAbsolutePath();
+
+
+        File videoFile2 = new File(Environment.getExternalStorageDirectory(),
+                "Download/my_vid.mp4");
+        String url2 = "file://" + videoFile2.getAbsolutePath();
+
+        File videoFile3 = new File(Environment.getExternalStorageDirectory(),
+                "Download/my_result.mp4");
+        String url3 = "file://" + videoFile3.getAbsolutePath();
+
+        String[] cmdLine = {"ffmpeg",  "-i", "concat:my_4673.mp4|my_vid.mp4",  "-vcodec", "copy", url3}; // ffmpeg -i video.avi -vcodec copy -acodec copy -ss 00:00:00 -t 00:00:04 trimmed_video.avi
+
+       */
+
 
         mMpegEditor = new FFmpegVideoEditor();
 
-        mMpegEditor.command(cmdLine);
 
+        mMpegEditor.trimVideo(videoFile, "00:00:01.250", "00:00:15.500", videoFileTrimmed);
 
+       // mMpegEditor.getFrame(videoFile, "00:00:01", videoFileFrame);
+        //  mMpegEditor.joinVideo(videoFile, videoFileTrimmed, videoFileFrame, this);
 	}
 
 
