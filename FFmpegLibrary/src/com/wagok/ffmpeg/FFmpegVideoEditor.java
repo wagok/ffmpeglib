@@ -1,13 +1,13 @@
 package com.wagok.ffmpeg;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Environment;
+import android.util.Log;
+import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -38,45 +38,23 @@ public class FFmpegVideoEditor   {
         String[] data = {"file " + "'" + firstFile.getAbsolutePath() + "'" ,
                          "file " + "'" + secondFile.getAbsolutePath() + "'"};
 
-        File file = new File(Environment.getExternalStorageDirectory(),
-                "Download/mylist.txt");
 
-        if (!file.exists()) {
-            try {
-            file.createNewFile();
-            } catch (Exception e) {
 
-            }
-        }
 
-        FileOutputStream writer = null;
+        File tarjeta = Environment.getExternalStorageDirectory();
+        File file = new File(tarjeta.getAbsolutePath()+"/Download/mylist.txt");
         try {
-            writer = ctx.openFileOutput(file.getName(), Context.MODE_PRIVATE);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        OutputStreamWriter escritor = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
+            escritor.write("file " + "'" + firstFile.getAbsolutePath() + "'" + "\n" + "file " + "'" + secondFile.getAbsolutePath() + "'" + "\n");
+            escritor.flush();
+            escritor.close();
+
+        } catch (Exception e) {
         }
 
-        for (String string: data){
-            try {
-                writer.write(string.getBytes());
-            } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
-            try {
-                writer.flush();
-            } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
-        }
 
-        try {
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-
-        //String[] cmdLine = {"ffmpeg", "-f", "concat",  "-i",  file.getAbsolutePath(),  "-vcodec", "copy", destinationFile.getAbsolutePath()}; // ffmpeg -i video.avi -vcodec copy -acodec copy -ss 00:00:00 -t 00:00:04 trimmed_video.avi
-        String[] cmdLine = {"ffmpeg", "-formats"};
+        String[] cmdLine = {"ffmpeg", "-f", "concat",  "-i",  file.getAbsolutePath(),  "-vcodec", "copy", "-strict", "-2", destinationFile.getAbsolutePath()}; // ffmpeg -i video.avi -vcodec copy -acodec copy -ss 00:00:00 -t 00:00:04 trimmed_video.avi
+        //String[] cmdLine = {"ffmpeg", "-formats"};
         command(cmdLine);
 
     }

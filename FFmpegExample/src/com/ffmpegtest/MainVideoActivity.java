@@ -50,7 +50,7 @@ public class MainVideoActivity extends Activity  {
                 "Download/my_ttr.mp4");
 
         File videoFileFrame = new File(Environment.getExternalStorageDirectory(),
-                "Download/m_out.jpg");
+                "Download/m_out.mp4");
 
         //String[] cmdLine = {"ffmpeg", "-i", url, "-vcodec", "copy", "-ss", "00:00:00", "-t", "00:00:04", url+"trimmed.mp4"}; // ffmpeg -i video.avi -vcodec copy -acodec copy -ss 00:00:00 -t 00:00:04 trimmed_video.avi
 
@@ -76,10 +76,10 @@ public class MainVideoActivity extends Activity  {
         mMpegEditor = new FFmpegVideoEditor();
 
 
-        mMpegEditor.trimVideo(videoFile, "00:00:01.250", "00:00:15.500", videoFileTrimmed);
+        //mMpegEditor.trimVideo(videoFile, "00:00:01.250", "00:00:15.500", videoFileTrimmed);
 
        // mMpegEditor.getFrame(videoFile, "00:00:01", videoFileFrame);
-        //  mMpegEditor.joinVideo(videoFile, videoFileTrimmed, videoFileFrame, this);
+          mMpegEditor.joinVideo(videoFile, videoFileTrimmed, videoFileFrame, this);
 	}
 
 
