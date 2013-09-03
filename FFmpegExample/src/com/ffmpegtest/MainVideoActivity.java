@@ -76,10 +76,12 @@ public class MainVideoActivity extends Activity  {
         mMpegEditor = new FFmpegVideoEditor();
 
 
-        //mMpegEditor.trimVideo(videoFile, "00:00:01.250", "00:00:15.500", videoFileTrimmed);
+      mMpegEditor.trimVideo(videoFile, "00:00:01.250", "00:00:5.500", videoFileTrimmed);
 
-       // mMpegEditor.getFrame(videoFile, "00:00:01", videoFileFrame);
-          mMpegEditor.joinVideo(videoFile, videoFileTrimmed, videoFileFrame, this);
+       // mMpegEditor = new FFmpegVideoEditor();
+
+      mMpegEditor.getFrames(videoFile, "00:00:01", "file://" + Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/m_out_%03d.jpg");
+       //   mMpegEditor.joinVideo(videoFile, videoFileTrimmed, videoFileFrame, this);
 	}
 
 

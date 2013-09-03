@@ -9,11 +9,22 @@ package com.wagok.ffmpeg;
  */
 public final class Videokit {
 
+    String libPath;
+
     static {
-        System.loadLibrary("videokit");
+       // System.loadLibrary("videokit");
+        System.loadLibrary("ffmpeginvoke");
     }
 
-    public native void run(String[] args);
+    public Videokit(String module) {
+        libPath = "/data/data/" + module + "/lib/libvideokit.so";
+    }
+
+    public void run(String[]  args) {
+        invoke(libPath, args);
+    }
+
+    public native void invoke(String path, String[] args);
 
 }
 

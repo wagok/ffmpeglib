@@ -59,14 +59,18 @@ public class FFmpegVideoEditor   {
 
     }
 
+    public void getFrames(File videoFile, String startTime, String destinationFile) {
+        String[] cmdLine = {"ffmpeg", "-i", "file://" + videoFile.getAbsolutePath(),  "-ss", startTime,   "-f", "image2", "-vframes", "3", destinationFile }; // ffmpeg -i video.avi -vcodec copy -acodec copy -ss 00:00:00 -t 00:00:04 trimmed_video.avi
+        command(cmdLine);
+    }
+
     public void getFrame(File videoFile, String startTime, File destinationFile) {
         String[] cmdLine = {"ffmpeg", "-i", "file://" + videoFile.getAbsolutePath(),  "-ss", startTime, "-f", "image2", "-vframes", "1",  "file://" + destinationFile.getAbsolutePath()}; // ffmpeg -i video.avi -vcodec copy -acodec copy -ss 00:00:00 -t 00:00:04 trimmed_video.avi
         command(cmdLine);
     }
 
-
     public void command(String[] cmdLine) {
-        Videokit vk = new Videokit();
+        Videokit vk = new Videokit("com.ffmpegtest");
         vk.run(cmdLine);
     }
 
