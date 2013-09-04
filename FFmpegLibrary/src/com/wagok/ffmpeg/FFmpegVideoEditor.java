@@ -23,29 +23,26 @@ public class FFmpegVideoEditor   {
         return;
     }
 
-    public void trimVideo(File videoFile, String startTime, String duration, File destinationFile) {
+    public void trimVideo(String videoFile, String startTime, String duration, String destinationFile) {
 
 
-        String[] cmdLine = {"ffmpeg", "-i", "file://" + videoFile.getAbsolutePath(), "-vcodec", "copy", "-ss", startTime, "-t", duration, "-strict", "-2",  "file://" + destinationFile.getAbsolutePath()}; // ffmpeg -i video.avi -vcodec copy -acodec copy -ss 00:00:00 -t 00:00:04 trimmed_video.avi
+        String[] cmdLine = {"ffmpeg",  "-ss", startTime, "-i", "file://" + videoFile, "-vcodec", "copy", "-t", duration, "-strict", "-2",  "file://" + destinationFile}; // ffmpeg -i video.avi -vcodec copy -acodec copy -ss 00:00:00 -t 00:00:04 trimmed_video.avi
         command(cmdLine);
     }
 
-    public void joinVideo(File firstFile, File secondFile, File destinationFile, Context ctx)  {
-
-
-       //         String[] cmdLine = {"ffmpeg",  "-i", "concat:"+ firstFile.getAbsolutePath()+"|"+secondFile.getAbsolutePath(),  "-vcodec", "copy", destinationFile.getAbsolutePath()}; // ffmpeg -i video.avi -vcodec copy -acodec copy -ss 00:00:00 -t 00:00:04 trimmed_video.avi
-
-        String[] data = {"file " + "'" + firstFile.getAbsolutePath() + "'" ,
-                         "file " + "'" + secondFile.getAbsolutePath() + "'"};
+    public void joinVideo(String[] files, String destinationFile, Context ctx)  {
 
 
 
+        String tarjeta = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download";
+        Log.d("MyVideo", tarjeta);
+        File file = new File(tarjeta+"/templist.txt");
 
-        File tarjeta = Environment.getExternalStorageDirectory();
-        File file = new File(tarjeta.getAbsolutePath()+"/Download/mylist.txt");
         try {
         OutputStreamWriter escritor = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
-            escritor.write("file " + "'" + firstFile.getAbsolutePath() + "'" + "\n" + "file " + "'" + secondFile.getAbsolutePath() + "'" + "\n");
+            for(String item : files)  {
+                escritor.write("file " + "'file://" + item + "'" + "\n" );
+            }
             escritor.flush();
             escritor.close();
 
@@ -53,19 +50,28 @@ public class FFmpegVideoEditor   {
         }
 
 
-        String[] cmdLine = {"ffmpeg", "-f", "concat",  "-i",  file.getAbsolutePath(),  "-vcodec", "copy", "-strict", "-2", destinationFile.getAbsolutePath()}; // ffmpeg -i video.avi -vcodec copy -acodec copy -ss 00:00:00 -t 00:00:04 trimmed_video.avi
-        //String[] cmdLine = {"ffmpeg", "-formats"};
+        String[] cmdLine = {"ffmpeg", "-f", "concat",  "-i",  file.getAbsolutePath(),  "-vcodec", "copy", "-strict", "-2", "file://" + destinationFile}; // ffmpeg -i video.avi -vcodec copy -acodec copy -ss 00:00:00 -t 00:00:04 trimmed_video.avi
+
         command(cmdLine);
 
     }
 
-    public void getFrames(File videoFile, String startTime, String destinationFile) {
-        String[] cmdLine = {"ffmpeg", "-i", "file://" + videoFile.getAbsolutePath(),  "-ss", startTime,   "-f", "image2", "-vframes", "3", destinationFile }; // ffmpeg -i video.avi -vcodec copy -acodec copy -ss 00:00:00 -t 00:00:04 trimmed_video.avi
+    public void getFrames(String videoFile, String startTime, int seconds, int framesPerSecond, String jpgSize, String destinationFile) {
+        String[] cmdLine = {"ffmpeg",
+                            "-ss", startTime,
+                            "-i", "file://" + videoFile,
+                            "-f", "image2",
+                            "-t", Integer.toString(seconds),
+                            "-r", Integer.toString(framesPerSecond),
+                            "-s", jpgSize,
+                            "file://" + destinationFile }; // ffmpeg -i video.avi -vcodec copy -acodec copy -ss 00:00:00 -t 00:00:04 trimmed_video.avi
         command(cmdLine);
     }
 
     public void getFrame(File videoFile, String startTime, File destinationFile) {
-        String[] cmdLine = {"ffmpeg", "-i", "file://" + videoFile.getAbsolutePath(),  "-ss", startTime, "-f", "image2", "-vframes", "1",  "file://" + destinationFile.getAbsolutePath()}; // ffmpeg -i video.avi -vcodec copy -acodec copy -ss 00:00:00 -t 00:00:04 trimmed_video.avi
+        String[] cmdLine = {"ffmpeg", "-ss", startTime, "-i", "file://" + videoFile.getAbsolutePath(),   "-f", "image2", "-vframes", "1",  "file://" + destinationFile.getAbsolutePath()}; // ffmpeg -i video.avi -vcodec copy -acodec copy -ss 00:00:00 -t 00:00:04 trimmed_video.avi
+        //String[] cmdLine = {"ffmpeg",  "-ss", startTime, "-i", "file://" + videoFile.getAbsolutePath(),  "-r", "1",   "file://" + destinationFile.getAbsolutePath()}; // ffmpeg -i video.avi -vcodec copy -acodec copy -ss 00:00:00 -t 00:00:04 trimmed_video.avi
+
         command(cmdLine);
     }
 

@@ -50,7 +50,7 @@ public class MainVideoActivity extends Activity  {
                 "Download/my_ttr.mp4");
 
         File videoFileFrame = new File(Environment.getExternalStorageDirectory(),
-                "Download/m_out.mp4");
+                "Download/m_ut%03d.jpg");
 
         //String[] cmdLine = {"ffmpeg", "-i", url, "-vcodec", "copy", "-ss", "00:00:00", "-t", "00:00:04", url+"trimmed.mp4"}; // ffmpeg -i video.avi -vcodec copy -acodec copy -ss 00:00:00 -t 00:00:04 trimmed_video.avi
 
@@ -76,12 +76,18 @@ public class MainVideoActivity extends Activity  {
         mMpegEditor = new FFmpegVideoEditor();
 
 
-      mMpegEditor.trimVideo(videoFile, "00:00:01.250", "00:00:5.500", videoFileTrimmed);
+     // mMpegEditor.trimVideo(videoFile.getAbsolutePath(), "00:00:01.250", "00:00:5.500", videoFileTrimmed.getAbsolutePath());
 
        // mMpegEditor = new FFmpegVideoEditor();
 
-      mMpegEditor.getFrames(videoFile, "00:00:01", "file://" + Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/m_out_%03d.jpg");
-       //   mMpegEditor.joinVideo(videoFile, videoFileTrimmed, videoFileFrame, this);
+      //mMpegEditor.getFrames(videoFile, "00:00:10",  Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/m_out_%03d.jpg", 1);
+
+      // mMpegEditor.getFrames(videoFile.getAbsolutePath(), "00:00:10", 5, 3, "vga",   Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/m_out_%03d.jpg");
+      //mMpegEditor.getFrame(videoFile, "00:00:39",  videoFileFrame);
+      mMpegEditor.joinVideo(new String[]{
+             Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/my_vid.mp4",
+             Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/my_vid.mp4",
+             Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/my_vid.mp4"} , Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/my_ut.mp4", this);
 	}
 
 
