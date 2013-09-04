@@ -56,6 +56,12 @@ public class FFmpegVideoEditor   {
 
     }
 
+    public void rotateVideo(String filePathFrom, RotationHint hint, String filePathTo) {
+        String[] cmdLine = {"ffmpeg", "-i", filePathFrom, "-vf", "transpose=" + hint.getParam(), "-strict", "-2" , filePathTo};
+
+        command(cmdLine);
+    }
+
     public void getFrames(String videoFile, String startTime, int seconds, int framesPerSecond, String jpgSize, String destinationFile) {
         String[] cmdLine = {"ffmpeg",
                             "-ss", startTime,
