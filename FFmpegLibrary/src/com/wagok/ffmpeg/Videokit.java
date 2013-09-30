@@ -12,7 +12,7 @@ public final class Videokit {
     String libPath;
 
     static {
-       // System.loadLibrary("videokit");
+        // System.loadLibrary("videokit");
         System.loadLibrary("ffmpeginvoke");
     }
 
@@ -20,7 +20,7 @@ public final class Videokit {
         libPath = "/data/data/" + module + "/lib/libvideokit.so";
     }
 
-    public void run(String[]  args) {
+    public void run(String[] args) {
         invoke(libPath, args);
     }
 

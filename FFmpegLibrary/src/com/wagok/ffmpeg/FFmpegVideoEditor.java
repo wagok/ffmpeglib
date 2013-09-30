@@ -29,7 +29,7 @@ public class FFmpegVideoEditor {
         command(cmdLine);
     }
 
-    public void joinVideo(String[] files, String tarjeta, String destinationFile, Context ctx) {
+    public void joinVideo(String[] files, String tarjeta, String destinationFile, boolean codecCopy, Context ctx) {
 
 
         //String tarjeta = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download";
@@ -47,8 +47,12 @@ public class FFmpegVideoEditor {
         } catch (Exception e) {
         }
 
-
-        String[] cmdLine = {"ffmpeg", "-f", "concat", "-i", file.getAbsolutePath(), "-vcodec", "copy", "-strict", "-2", "file://" + destinationFile}; // ffmpeg -i video.avi -vcodec copy -acodec copy -ss 00:00:00 -t 00:00:04 trimmed_video.avi
+        String[] cmdLine;
+        if (codecCopy) {
+            cmdLine = new String[]{"ffmpeg", "-f", "concat", "-i", file.getAbsolutePath(), "-vcodec", "copy", "-strict", "-2", "file://" + destinationFile}; // ffmpeg -i video.avi -vcodec copy -acodec copy -ss 00:00:00 -t 00:00:04 trimmed_video.avi
+        } else {
+            cmdLine = new String[]{"ffmpeg", "-f", "concat", "-i", file.getAbsolutePath(), "-strict", "-2", "file://" + destinationFile}; // ffmpeg -i video.avi -vcodec copy -acodec copy -ss 00:00:00 -t 00:00:04 trimmed_video.avi
+        }
 
         command(cmdLine);
 
@@ -56,6 +60,18 @@ public class FFmpegVideoEditor {
 
     public void rotateVideo(String filePathFrom, RotationHint hint, String filePathTo) {
         String[] cmdLine = {"ffmpeg", "-i", filePathFrom, "-vf", "transpose=" + hint.getParam(), "-strict", "-2", filePathTo};
+
+        command(cmdLine);
+    }
+
+    public void mirroredFlip(String filePathFrom, String filePathTo) {
+        String[] cmdLine = {"ffmpeg", "-i", filePathFrom, "-vf", "hflip,vflip", "-map", "0", "-strict", "-2", filePathTo};
+
+        command(cmdLine);
+    }
+
+    public void simpleFFmpegProcessing(String filePathFrom, String filePathTo) {
+        String[] cmdLine = {"ffmpeg", "-i", filePathFrom, "-map", "0", "-strict", "-2", filePathTo};
 
         command(cmdLine);
     }
