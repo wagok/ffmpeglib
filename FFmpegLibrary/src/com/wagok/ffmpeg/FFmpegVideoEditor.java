@@ -105,8 +105,14 @@ public class FFmpegVideoEditor {
     }
 
     public void command(String[] cmdLine) {
-        Videokit vk = new Videokit("com.brabble");
+        Videokit vk = new Videokit("com.ffmpegtest");
+        try {
         vk.run(cmdLine);
+        } catch(Exception e) {
+            Log.d("Videokit", e.getMessage());
+
+        }
+
     }
 
 
