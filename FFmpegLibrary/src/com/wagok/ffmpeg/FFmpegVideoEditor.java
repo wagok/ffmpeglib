@@ -22,14 +22,14 @@ public class FFmpegVideoEditor {
         return;
     }
 
-    public void trimVideo(String videoFile, String startTime, String duration, String destinationFile) {
+    public void trimVideo(String videoFile, String startTime, String duration, String destinationFile) throws FFmpegVideoEditorException {
 
 
         String[] cmdLine = {"ffmpeg", "-ss", startTime, "-i", "file://" + videoFile, "-vcodec", "copy", "-t", duration, "-strict", "-2", "file://" + destinationFile}; // ffmpeg -i video.avi -vcodec copy -acodec copy -ss 00:00:00 -t 00:00:04 trimmed_video.avi
         command(cmdLine);
     }
 
-    public void joinVideo(String[] files, String tarjeta, String destinationFile, boolean codecCopy, Context ctx) {
+    public void joinVideo(String[] files, String tarjeta, String destinationFile, boolean codecCopy, Context ctx) throws FFmpegVideoEditorException {
 
 
         //String tarjeta = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download";
@@ -58,25 +58,25 @@ public class FFmpegVideoEditor {
 
     }
 
-    public void rotateVideo(String filePathFrom, RotationHint hint, String filePathTo) {
+    public void rotateVideo(String filePathFrom, RotationHint hint, String filePathTo) throws FFmpegVideoEditorException {
         String[] cmdLine = {"ffmpeg", "-i", filePathFrom, "-vf", "transpose=" + hint.getParam(), "-strict", "-2", filePathTo};
 
         command(cmdLine);
     }
 
-    public void mirroredFlip(String filePathFrom, String filePathTo) {
+    public void mirroredFlip(String filePathFrom, String filePathTo) throws FFmpegVideoEditorException {
         String[] cmdLine = {"ffmpeg", "-i", filePathFrom, "-vf", "hflip,vflip", "-map", "0", "-strict", "-2", filePathTo};
 
         command(cmdLine);
     }
 
-    public void simpleFFmpegProcessing(String filePathFrom, String filePathTo) {
+    public void simpleFFmpegProcessing(String filePathFrom, String filePathTo) throws FFmpegVideoEditorException {
         String[] cmdLine = {"ffmpeg", "-i", filePathFrom, "-map", "0", "-strict", "-2", filePathTo};
 
         command(cmdLine);
     }
 
-    public void setMetaData(String filePathFrom, String metadataName, String metadataValue, String filePathTo) {
+    public void setMetaData(String filePathFrom, String metadataName, String metadataValue, String filePathTo) throws FFmpegVideoEditorException {
         String[] cmd = {
                 "ffmpeg", "-i", filePathFrom, "-codec", "copy", "-strict", "-2", "-metadata:s:v:0", metadataName + "=" + metadataValue, filePathTo
         };
@@ -84,11 +84,11 @@ public class FFmpegVideoEditor {
         command(cmd);
     }
 
-    public void getFrames(String videoFile, String startTime, int seconds, int framesPerSecond, String jpgSize, String destinationFile) {
+    public void getFrames(String videoFile, String startTime, int seconds, int framesPerSecond, String jpgSize, String destinationFile) throws FFmpegVideoEditorException {
         getFrames(videoFile, startTime, seconds, framesPerSecond, jpgSize, null, destinationFile);
     }
 
-    public void getFrames(String videoFile, String startTime, int seconds, int framesPerSecond, String jpgSize, RotationHint hint, String destinationFile) {
+    public void getFrames(String videoFile, String startTime, int seconds, int framesPerSecond, String jpgSize, RotationHint hint, String destinationFile) throws FFmpegVideoEditorException {
         String[] cmdLine;
         if (hint == null) {
             cmdLine = new String[]{"ffmpeg",
@@ -113,20 +113,20 @@ public class FFmpegVideoEditor {
         command(cmdLine);
     }
 
-    public void getFrame(File videoFile, String startTime, File destinationFile) {
+    public void getFrame(File videoFile, String startTime, File destinationFile) throws FFmpegVideoEditorException {
         String[] cmdLine = {"ffmpeg", "-ss", startTime, "-i", "file://" + videoFile.getAbsolutePath(), "-f", "image2", "-vframes", "1", "file://" + destinationFile.getAbsolutePath()}; // ffmpeg -i video.avi -vcodec copy -acodec copy -ss 00:00:00 -t 00:00:04 trimmed_video.avi
         //String[] cmdLine = {"ffmpeg",  "-ss", startTime, "-i", "file://" + videoFile.getAbsolutePath(),  "-r", "1",   "file://" + destinationFile.getAbsolutePath()}; // ffmpeg -i video.avi -vcodec copy -acodec copy -ss 00:00:00 -t 00:00:04 trimmed_video.avi
 
         command(cmdLine);
     }
 
-    public void command(String[] cmdLine) {
+    public void command(String[] cmdLine) throws FFmpegVideoEditorException {
         Videokit vk = new Videokit("com.ffmpegtest");
         try {
         vk.run(cmdLine);
         } catch(Exception e) {
             Log.d("Videokit", e.getMessage());
-
+            throw new FFmpegVideoEditorException("Videokit: " + e.getMessage());
         }
 
     }
