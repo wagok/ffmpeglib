@@ -17,6 +17,8 @@ import java.io.OutputStreamWriter;
  */
 public class FFmpegVideoEditor {
 
+    protected Videokit vk = null;
+
     public void getInfo() {
 
         return;
@@ -114,14 +116,14 @@ public class FFmpegVideoEditor {
     }
 
     public void getFrame(File videoFile, String startTime, File destinationFile) {
-        String[] cmdLine = {"ffmpeg", "-ss", startTime, "-i", "file://" + videoFile.getAbsolutePath(), "-f", "image2", "-vframes", "1", "file://" + destinationFile.getAbsolutePath()}; // ffmpeg -i video.avi -vcodec copy -acodec copy -ss 00:00:00 -t 00:00:04 trimmed_video.avi
+        String[] cmdLine = {"ffmpeg", "-y", "-ss", startTime, "-i", "file://" + videoFile.getAbsolutePath(), "-f", "image2", "-vframes", "1", "file://" + destinationFile.getAbsolutePath()}; // ffmpeg -i video.avi -vcodec copy -acodec copy -ss 00:00:00 -t 00:00:04 trimmed_video.avi
         //String[] cmdLine = {"ffmpeg",  "-ss", startTime, "-i", "file://" + videoFile.getAbsolutePath(),  "-r", "1",   "file://" + destinationFile.getAbsolutePath()}; // ffmpeg -i video.avi -vcodec copy -acodec copy -ss 00:00:00 -t 00:00:04 trimmed_video.avi
 
         command(cmdLine);
     }
 
     public void command(String[] cmdLine) {
-        Videokit vk = new Videokit("com.ffmpegtest");
+        vk = new Videokit("com.ffmpegtest");
         try {
         vk.run(cmdLine);
         } catch(Exception e) {
@@ -129,6 +131,13 @@ public class FFmpegVideoEditor {
 
         }
 
+    }
+
+    public void terminate() {
+       if (vk != null) {
+           vk.stopNative();
+           Log.d("Videokit", "Stop native called");
+       }
     }
 
 

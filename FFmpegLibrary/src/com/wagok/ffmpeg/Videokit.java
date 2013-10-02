@@ -26,5 +26,7 @@ public final class Videokit {
 
     public native void invoke(String path, String[] args);
 
+    public native void stopNative();
+
 }
 
