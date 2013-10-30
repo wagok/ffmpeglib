@@ -86,13 +86,10 @@ public class FFmpegVideoEditor {
         command(cmd);
     }
 
-    public void getFrames(String videoFile, String startTime, int seconds, int framesPerSecond, String jpgSize, String destinationFile) throws FFmpegVideoEditorException {
-        getFrames(videoFile, startTime, seconds, framesPerSecond, jpgSize, null, destinationFile);
-    }
-
-    public void getFrames(String videoFile, String startTime, int seconds, int framesPerSecond, String jpgSize, RotationHint hint, String destinationFile) throws FFmpegVideoEditorException {
+    @Deprecated
+    public void getFrames(String videoFile, String startTime, int seconds, int framesPerSecond, String jpgSize, String hint, String destinationFile) throws FFmpegVideoEditorException {
         String[] cmdLine;
-        if (hint == null) {
+        if (hint == null || hint.isEmpty()) {
             cmdLine = new String[]{"ffmpeg",
                     "-ss", startTime,
                     "-i", "file://" + videoFile,
@@ -109,39 +106,94 @@ public class FFmpegVideoEditor {
                     "-t", Integer.toString(seconds),
                     "-r", Integer.toString(framesPerSecond),
                     "-s", jpgSize,
-                    "-vf", "transpose=" + hint.getParam(),
+                    "-vf", hint,
                     "file://" + destinationFile};
         }
         command(cmdLine);
     }
 
-<<<<<<< HEAD
-    public void getFrame(File videoFile, String startTime, File destinationFile) {
-        String[] cmdLine = {"ffmpeg", "-y", "-ss", startTime, "-i", "file://" + videoFile.getAbsolutePath(), "-f", "image2", "-vframes", "1", "file://" + destinationFile.getAbsolutePath()}; // ffmpeg -i video.avi -vcodec copy -acodec copy -ss 00:00:00 -t 00:00:04 trimmed_video.avi
 
-        //String[] cmdLine = {"ffmpeg",  "-ss", startTime, "-i", "file://" + videoFile.getAbsolutePath(),  "-r", "1",   "file://" + destinationFile.getAbsolutePath()}; // ffmpeg -i video.avi -vcodec copy -acodec copy -ss 00:00:00 -t 00:00:04 trimmed_video.avi
-
+    public void getFrames(String videoFile, String startTime, int seconds, int framesPerSecond, String hint, String destinationFile) throws FFmpegVideoEditorException {
+        String[] cmdLine;
+        if (hint == null || hint.isEmpty()) {
+            cmdLine = new String[]{"ffmpeg",
+                    "-ss", startTime,
+                    "-i", "file://" + videoFile,
+                    "-f", "image2",
+                    "-t", Integer.toString(seconds),
+                    "-r", Integer.toString(framesPerSecond),
+                    "file://" + destinationFile};
+        } else {
+            cmdLine = new String[]{"ffmpeg",
+                    "-ss", startTime,
+                    "-i", "file://" + videoFile,
+                    "-f", "image2",
+                    "-t", Integer.toString(seconds),
+                    "-r", Integer.toString(framesPerSecond),
+                    "-vf", hint,
+                    "file://" + destinationFile};
+        }
         command(cmdLine);
     }
 
-
-    public void command(String[] cmdLine) {
-        vk = new Videokit("com.ffmpegtest");
-        try {
-        vk.run(cmdLine);
-        } catch(Exception e) {
-            Log.d("Videokit", e.getMessage());
-            throw new FFmpegVideoEditorException("Videokit: " + e.getMessage());
+    public void getFrame(File videoFile, String startTime, File destinationFile, String hint) throws FFmpegVideoEditorException {
+        if (hint == null) {
+            String[] cmdLine = {"ffmpeg", "-y", "-ss", startTime, "-i", "file://" + videoFile.getAbsolutePath(), "-f", "image2", "-vframes", "1", "file://" + destinationFile.getAbsolutePath()}; // ffmpeg -i video.avi -vcodec copy -acodec copy -ss 00:00:00 -t 00:00:04 trimmed_video.avi
+            command(cmdLine);
+        } else {
+            String[] cmdLine = {
+                    "ffmpeg",
+                    "-y",
+                    "-ss", startTime,
+                    "-i", "file://" + videoFile.getAbsolutePath(),
+                    "-f", "image2",
+                    "-vframes", "1",
+                    "-vf", hint,
+                    "file://" + destinationFile.getAbsolutePath()};
+            String res = "";
+            for (String c : cmdLine) {
+                res += c + " ";
+                Log.d("DEBUG_VIDEO", c);
+            }
+            Log.d("DEBUG_VIDEO", res);
+            command(cmdLine);
         }
 
+        //String[] cmdLine = {"ffmpeg",  "-ss", startTime, "-i", "file://" + videoFile.getAbsolutePath(),  "-r", "1",   "file://" + destinationFile.getAbsolutePath()}; // ffmpeg -i video.avi -vcodec copy -acodec copy -ss 00:00:00 -t 00:00:04 trimmed_video.avi
+
+
+    }
+
+
+    public void command(String[] cmdLine) throws FFmpegVideoEditorException {
+        vk = new Videokit("com.brabble");
+        try {
+            vk.run(cmdLine);
+        } catch (Exception e) {
+//            Log.d("Videokit", e.getMessage());
+            throw new FFmpegVideoEditorException("Videokit: " + e.getMessage());
+        }
     }
 
     public void terminate() {
-       if (vk != null) {
-           vk.stopNative();
-           Log.d("Videokit", "Stop native called");
-       }
+        if (vk != null) {
+            vk.stopNative();
+//           Log.d("Videokit", "Stop native called");
+        }
     }
 
 
+    public static String getTransposeSettings(int[] transposeSettings) {
+        String res = "";
+        if (transposeSettings != null && transposeSettings.length != 0) {
+            for (int i = 0; i < transposeSettings.length; i++) {
+                if (!res.isEmpty()) {
+                    res += ",";
+                }
+                res += "transpose=" + transposeSettings[i];
+            }
+        }
+        Log.d("DEBUG_", res);
+        return res;
+    }
 }

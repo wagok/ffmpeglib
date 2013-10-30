@@ -15,22 +15,4 @@ public enum RotationHint {
     public int getParam() {
         return param;
     }
-
-    public static RotationHint getRotationHintFromDegree(int degree) {
-        RotationHint hint;
-        switch (degree) {
-            case 90:
-                hint = RotationHint.CLOCKWISE_90;
-                break;
-            case 270:
-                hint = RotationHint.COUNTER_CLOCKWISE_90;
-                break;
-            case 360:
-                hint = RotationHint.CLOCKWISE_AND_VERTICAL_FLIP;
-                break;
-            default:
-                hint = RotationHint.DEFAULT;
-        }
-        return hint;
-    }
 }
